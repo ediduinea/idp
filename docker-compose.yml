@@ -1,7 +1,7 @@
 version: "2"
 services:
   server:
-    image: bletive/server
+    image: bletive/idp-hub
     links:
       - database
     ports:
