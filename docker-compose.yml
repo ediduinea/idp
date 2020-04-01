@@ -1,7 +1,7 @@
 version: "2"
 services:
   server:
-    build: ./server
+    image: bletive/idp-hub:server
     links:
       - database
     ports:
@@ -12,7 +12,7 @@ services:
     tty : true
 
   database:
-    image: mysql:5.7
+    image: bletive/idp-hub:database
     restart: always
     ports:
       - "32000:3306"
@@ -21,8 +21,6 @@ services:
     networks:
       static-network:
         ipv4_address: 20.5.0.3
-    volumes:
-      - ./database:/docker-entrypoint-initdb.d/:ro
 
 networks:
   static-network:
