@@ -1,7 +1,7 @@
 version: "2"
 services:
   server:
-    image: bletive/idp-hub:server
+    image: bletive/server
     links:
       - database
     ports:
@@ -12,7 +12,7 @@ services:
     tty : true
 
   database:
-    image: bletive/idp-hub:database
+    image: bletive/database
     restart: always
     ports:
       - "32000:3306"
