@@ -1,12 +1,4 @@
-version: "3.4"
-
-volumes:
-  prometheus_db: {}
-
-configs:
-  promi:
-    file: ./monitoring/prometheus.yml
-
+version: "3"
 services:
   server:
     image: bletive/idp-hub1
@@ -44,7 +36,7 @@ services:
 
   admin:
     depends_on:
-      - "database"
+      - database
     #build: ./admin
     image: bletive/admin_idp
     links:
@@ -57,30 +49,35 @@ services:
       - shukrnet
 
   prometheus:
-    image: prom/prometheus
+    image: prom/prometheus:latest
+    container_name: prometheus
     volumes:
-      - prometheus_db:/prometheus
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus_db:/var/lib/prometheus
+      - ./prometheus_db:/prometheus
+      - ./prometheus_db:/etc/prometheus
+      - ./alert.rules:/etc/prometheus/alert.rules
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--web.route-prefix=/'
       - '--storage.tsdb.retention.time=200h'
       - '--web.enable-lifecycle'
+    restart: unless-stopped
     ports:
       - "9090:9090"
-    configs:
-      - source: promi
-        target: /etc/prometheus/prometheus.yml
     networks:
       - shukrnet
 
   cadvisor:
     image: google/cadvisor
+    container_name: cadvisor
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:rw
       - /sys:/sys:ro
       - /var/lib/docker:/var/lib/docker:ro
       #- /cgroup:/cgroup:ro #doesn't work on MacOS only for Linux
+    restart: unless-stopped
     ports:
       - "8080:8080"
     networks:
@@ -88,6 +85,7 @@ services:
 
   nodeexporter:
     image: prom/node-exporter:v0.18.1
+    container_name: nodeexporter
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
@@ -97,6 +95,7 @@ services:
       - '--path.rootfs=/rootfs'
       - '--path.sysfs=/host/sys'
       - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+    restart: unless-stopped
     ports:
       - "9100:9100"
     networks:
