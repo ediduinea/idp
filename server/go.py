@@ -10,6 +10,31 @@ def init():
 	return render_template('page.html')
 
 
+@app.route('/classes_dump',methods=['POST','GET'])
+def process_classes_1():
+	config = {
+			'user': 'root',
+			'password': 'root',
+			'host': 'database',
+			'port': '3306',
+			'database': 'lol'
+		}
+
+	connection = mysql.connector.connect(**config)
+	cursor = connection.cursor()
+	cursor.execute('select * from classes')
+	results = [(a, b, c) for (a, b, c) in cursor]
+	str_results = ''
+	for elem in results:
+		for c in elem:
+			str_results += str(c)
+			str_results += ' ----  '
+		str_results += '\n'
+
+
+	return str_results
+
+
 @app.route('/champions',methods=['POST','GET'])
 def process_form():
 	if request.method == 'POST':
@@ -169,29 +194,6 @@ def process_raport_3():
 
 	return str_results
 
-@app.route('/classes_dump',methods=['POST','GET'])
-def process_classes_1():
-	config = {
-			'user': 'root',
-			'password': 'root',
-			'host': 'database',
-			'port': '3306',
-			'database': 'lol'
-		}
-
-	connection = mysql.connector.connect(**config)
-	cursor = connection.cursor()
-	cursor.execute('select * from classes')
-	results = [(a, b, c) for (a, b, c) in cursor]
-	str_results = ''
-	for elem in results:
-		for c in elem:
-			str_results += str(c)
-			str_results += ' ----  '
-		str_results += '\n'
-
-
-	return str_results
 
 @app.route('/champions_dump',methods=['POST','GET'])
 def process_form5():

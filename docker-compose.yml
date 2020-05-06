@@ -35,12 +35,12 @@ services:
       - shukrnet
 
   admin:
-    #build: ./admin
-    image: bletive/admin_idp
     depends_on:
       - database
+    #build: ./admin
+    image: bletive/admin_idp
     links:
-      - database
+      - "database"
     ports:
       - "5002:5002"
     stdin_open : true
