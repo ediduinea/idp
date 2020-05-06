@@ -1,4 +1,4 @@
-version: "2"
+version: "3"
 services:
   server:
     image: bletive/idp-hub
@@ -6,10 +6,9 @@ services:
       - database
     ports:
       - "5000:5000"
-    networks:
-      static-network:
-        ipv4_address: 20.5.0.4
     tty : true
+    networks:
+      - shukrnet
 
   database:
     image: bletive/database
@@ -19,11 +18,36 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
     networks:
-      static-network:
-        ipv4_address: 20.5.0.3
+      - shukrnet
+
+  client:
+    #build: ./client
+    image: bletive/client_idp
+    depends_on:
+      - server
+    links:
+    - server
+    ports:
+      - "6666:6666"
+    stdin_open : true
+    tty : true
+    networks:
+      - shukrnet
+
+  admin:
+    #build: ./admin
+    image: bletive/admin_idp
+    depends_on:
+      - database
+    links:
+      - database
+    ports:
+      - "5002:5002"
+    stdin_open : true
+    tty : true
+    networks:
+      - shukrnet
+
 
 networks:
-  static-network:
-    ipam:
-      config:
-        - subnet: 20.5.0.0/16
+  shukrnet:

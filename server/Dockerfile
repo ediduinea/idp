@@ -1,5 +1,4 @@
 FROM python:3
-EXPOSE 5000
 COPY requirements.txt /opt
 COPY go.py /opt
 COPY templates /opt/templates
