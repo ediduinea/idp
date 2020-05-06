@@ -17,6 +17,9 @@ if __name__ == '__main__':
 		option = option.split(' ')
 		
 		if option[0] == 'search_champion':
+			if len(option) == 1:
+				print("You must provide a champion name\n")
+				continue
 			payload = {'champion': option[1]}
 			response = requests.post('http://server:5000/champions_dump', params=payload)
 	
